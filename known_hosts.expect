@@ -34,6 +34,6 @@ foreach {machine} [array get machines] {
    expect -exact "Are you sure you want to continue connecting (yes/no)? "
    send -- "yes\r"
    expect -exact "password: "
-   send -- ""
+   send \003
    expect eof
 }
