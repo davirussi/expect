@@ -1,0 +1,39 @@
+#!/usr/bin/expect -f
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+set filename ./.ssh/known_hosts
+if {[file exist $filename]} {
+    # check that it's a directory
+    if {! [file isdirectory $filename]} {
+        puts "$filename exists, remove before running"
+        exit 0
+    }
+}
+
+array set machines {
+   smdh12
+   smdh13
+   smdh14
+   smdh15
+}
+
+foreach {machine} [array get machines] {
+   puts "Machine: $machine"
+   set timeout -1
+   spawn ssh $machine
+   match_max 100000
+   expect -exact "Are you sure you want to continue connecting (yes/no)? "
+   send -- "yes\r"
+   expect -exact "password: "
+   send -- ""
+   expect eof
+}
