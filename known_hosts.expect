@@ -10,11 +10,19 @@ if {$force_conservative} {
 	}
 }
 
-set filename ./.ssh/known_hosts
-if {[file exist $filename]} {
+#Argument simple validation
+if {![llength $argv]} {
+   puts "Pass path to home directory as argument"
+   exit 0
+}
+
+set homedir [lindex $argv 0]
+set filename /.ssh/known_hosts
+
+if {[file exist $homedir$filename]} {
     # check that it's a directory
-    if {! [file isdirectory $filename]} {
-        puts "$filename exists, remove before running"
+    if {! [file isdirectory $homedir$filename]} {
+        puts "$homedir$filename exists, remove before running"
         exit 0
     }
 }
